@@ -1,4 +1,4 @@
-/* RESET */
+/* ================= RESET ================= */
 * {
   margin: 0;
   padding: 0;
@@ -8,11 +8,10 @@
 html,
 body {
   height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* THEME */
+/* ================= THEME ================= */
 html {
   background: #fafafa;
   color: #111;
@@ -23,13 +22,13 @@ html.dark {
   color: #f5f5f5;
 }
 
-/* LAYOUT */
+/* ================= LAYOUT ================= */
 .app {
   display: flex;
   min-height: 100vh;
 }
 
-/* SIDEBAR */
+/* ================= SIDEBAR ================= */
 .sidebar {
   width: 56px;
   background: #f0f0f0;
@@ -46,16 +45,62 @@ html.dark .sidebar {
   border-color: #2a2a2a;
 }
 
-/* MAIN */
+/* ================= MAIN ================= */
 .main {
   flex: 1;
   position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
-/* TOP RIGHT */
+/* ================= BRAND HEADER ================= */
+.brand-header {
+  position: absolute;
+  top: 60px;
+  left: 90px;
+  text-align: left;
+  max-width: 260px;
+}
+
+.brand-title {
+  font-size: 42px;
+  font-weight: 800;
+}
+
+.brand-sub {
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.dark .brand-sub {
+  color: #9ca3af;
+}
+
+/* ================= METAL GRADIENT TEXT ================= */
+.metal-gradient-text {
+  background: linear-gradient(
+    120deg,
+    #0a0a0a,
+    #4a4a4a,
+    #c0c0c0,
+    #4a4a4a,
+    #0a0a0a
+  );
+  background-size: 200% auto;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: metalShine 5s linear infinite;
+}
+
+@keyframes metalShine {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ================= TOP RIGHT ================= */
 .top-right {
   position: absolute;
   top: 16px;
@@ -65,21 +110,22 @@ html.dark .sidebar {
   gap: 12px;
 }
 
-/* CENTER CONTENT */
+/* ================= CENTER CONTENT ================= */
 .center {
   width: 100%;
   max-width: 720px;
-  padding: 0 24px;
+  padding: 160px 24px 40px;
   text-align: center;
 }
 
-.center h1 {
+.center h1,
+.center h2 {
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 24px;
 }
 
-/* PROMPT BAR */
+/* ================= PROMPT BAR ================= */
 .prompt {
   display: flex;
   align-items: center;
@@ -104,7 +150,7 @@ html.dark .prompt {
   color: inherit;
 }
 
-/* BUTTONS */
+/* ================= BUTTONS ================= */
 .icon-btn {
   background: none;
   border: none;
@@ -136,7 +182,7 @@ html.dark .send {
   color: #000;
 }
 
-/* AVATAR */
+/* ================= AVATAR ================= */
 .avatar {
   width: 32px;
   height: 32px;
@@ -152,22 +198,7 @@ html.dark .avatar {
   background: #555;
 }
 
-/* TEXT */
-.subtitle {
-  margin-top: 16px;
-  font-size: 13px;
-  color: #666;
-}
-
-html.dark .subtitle {
-  color: #aaa;
-}
-
-.muted {
-  opacity: 0.5;
-}
-
-/* AGENT STEPS */
+/* ================= AGENT STEPS ================= */
 .steps {
   width: 100%;
   margin-top: 16px;
@@ -177,7 +208,7 @@ html.dark .subtitle {
 .step {
   padding: 10px 12px;
   border-left: 3px solid #ddd;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 14px;
   color: #777;
 }
@@ -195,7 +226,39 @@ html.dark .step.active {
   border-color: #fff;
 }
 
-/* OUTPUT */
+/* ================= OPTION LIST ================= */
+.option-list {
+  margin-top: 6px;
+  padding-left: 12px;
+  font-size: 14px;
+}
+
+.option-list li {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.selected {
+  margin-top: 6px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+html.dark .selected {
+  color: #81c784;
+}
+
+/* ================= OUTPUT CARD ================= */
 .output {
   text-align: left;
   margin-top: 16px;
@@ -210,28 +273,35 @@ html.dark .output {
   border-color: #333;
 }
 
-.output ul {
-  margin-top: 8px;
-  padding-left: 16px;
+/* ================= BOOKING LINK ================= */
+.booking-link {
+  margin-left: 8px;
+  font-size: 13px;
+  text-decoration: underline;
+  color: #1976d2;
 }
 
-.output li {
-  margin-bottom: 6px;
-  font-size: 14px;
+html.dark .booking-link {
+  color: #64b5f6;
 }
 
-/* DOWNLOAD */
+/* ================= DOWNLOAD BUTTON ================= */
 .download {
-  margin-top: 20px;
+  margin-top: 26px;
   display: flex;
   align-items: center;
   gap: 8px;
   background: #000;
   color: #fff;
   border: none;
-  padding: 10px 16px;
+  padding: 10px 18px;
   border-radius: 8px;
   cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.download:hover {
+  transform: translateY(-1px);
 }
 
 html.dark .download {
@@ -239,6 +309,7 @@ html.dark .download {
   color: #000;
 }
 
+/* ================= SPINNER ================= */
 .spinner {
   width: 14px;
   height: 14px;
@@ -255,137 +326,100 @@ html.dark .spinner {
 }
 
 @keyframes spin {
-  100% {
-    transform: rotate(360deg);
+  100% { transform: rotate(360deg); }
+}
+
+/* ================= TIMELINE ================= */
+.timeline {
+  border-left: 2px solid #d1d5db;
+  padding-left: 25px;
+  margin-top: 30px;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  background: #6366f1;
+  border-radius: 50%;
+  position: absolute;
+  left: -32px;
+  top: 8px;
+}
+
+/* ================= DAY CARDS ================= */
+.day-card {
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: 0.3s ease;
+  text-align: left;
+}
+
+.day-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Pastel Variants */
+.day-blue { background: #e0f2fe; }
+.day-green { background: #dcfce7; }
+.day-purple { background: #f3e8ff; }
+.day-orange { background: #ffedd5; }
+.day-pink { background: #ffe4e6; }
+
+/* Dark Mode */
+.dark .day-blue { background: #0c4a6e; }
+.dark .day-green { background: #14532d; }
+.dark .day-purple { background: #4c1d95; }
+.dark .day-orange { background: #7c2d12; }
+.dark .day-pink { background: #881337; }
+
+.step {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: stepFade 0.6s ease forwards;
+}
+
+@keyframes stepFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.selected {
-  margin-top: 8px;
-  font-weight: 600;
-  color: #2e7d32;
-}
-
-html.dark .selected {
-  color: #81c784;
-}
-
-.section-title {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-/* Grid Layout */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+.action-buttons {
+  margin-top: 18px;
+  display: flex;
   gap: 12px;
+  justify-content: center;
 }
 
-/* Card */
-.option-card {
+.secondary-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.secondary-btn:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.dark .secondary-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.alt-option {
+  margin: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
   border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 12px;
-  background: white;
-  transition: 0.2s ease;
-  position: relative;
-}
-
-html.dark .option-card {
-  background: #1a1a1a;
-  border-color: #333;
-}
-
-.option-card:hover {
-  transform: translateY(-3px);
-}
-
-/* Selected Card */
-.selected-card {
-  border: 2px solid #2e7d32;
-}
-
-.chosen {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  font-size: 12px;
-  font-weight: bold;
-  color: #2e7d32;
-}
-
-/* Text */
-.option-card h4 {
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-.option-card p {
-  font-size: 12px;
-  color: #666;
-}
-
-.price {
-  display: block;
+  cursor: pointer;
   font-size: 13px;
-  font-weight: 600;
-  margin-top: 6px;
-}
-
-.rating {
-  display: block;
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-.accent-travel {
-  border-left: 4px solid #2196f3;
-  background: rgba(33,150,243,0.05);
-}
-
-.accent-hotel {
-  border-left: 4px solid #4caf50;
-  background: rgba(76,175,80,0.05);
-}
-
-.accent-food {
-  border-left: 4px solid #ff9800;
-  background: rgba(255,152,0,0.05);
-}
-
-.accent-places {
-  border-left: 4px solid #9c27b0;
-  background: rgba(156,39,176,0.05);
-}
-
-.booking-link {
-  margin-left: 8px;
-  font-size: 13px;
-  text-decoration: underline;
-  color: #1976d2;
-}
-
-html.dark .booking-link {
-  color: #64b5f6;
-}
-
-.reason {
-  font-size: 13px;
-  color: #666;
-  margin-top: 4px;
-}
-
-.option-list {
-  margin-top: 6px;
-  padding-left: 12px;
-  font-size: 14px;
-}
-
-.selected {
-  margin-top: 6px;
-  font-weight: 600;
-  color: #2e7d32;
 }

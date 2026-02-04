@@ -1,15 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Sun, Moon, Send, Plus, Download, ExternalLink } from "lucide-react"
+import { useEffect, useState, useRef } from "react"
+import { Sun, Moon, Send, Plus, ExternalLink, Download } from "lucide-react"
 import "./globals.css"
 
-const TRAINS = [
-  "Mandore Express",
-  "Jaipur Intercity",
-  "Ajmer Shatabdi",
-]
+const DEFAULT_PROMPT = "Plan a 5 day trip to Jaipur under 10k"
 
+const TRAINS = ["Mandore Express", "Jaipur Intercity", "Ajmer Shatabdi"]
 const HOTELS = [
   "Hotel Arya Niwas",
   "Hotel Pearl Palace",
@@ -24,13 +21,29 @@ const STEPS = [
   "Selecting stay",
   "Planning food experiences",
   "Designing sightseeing plan",
+  "Checking weather conditions",
+  "Analyzing crowd patterns",
+  "Preparing packing suggestions",
 ]
 
 export default function Home() {
   const [dark, setDark] = useState(false)
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState(DEFAULT_PROMPT)
+
   const [stage, setStage] = useState<"idle" | "processing" | "done">("idle")
   const [currentStep, setCurrentStep] = useState(0)
+
+  const [trainReveal, setTrainReveal] = useState(0)
+  const [hotelReveal, setHotelReveal] = useState(0)
+
+  const [selectedTrain, setSelectedTrain] = useState("Jaipur Intercity")
+  const [selectedHotel, setSelectedHotel] = useState("Hotel Arya Niwas")
+
+  const [showEditPrompt, setShowEditPrompt] = useState(false)
+
+  const timers = useRef<NodeJS.Timeout[]>([])
+
+  /* ---------------- THEME ---------------- */
 
   useEffect(() => {
     if (localStorage.getItem("theme") === "dark") {
@@ -45,25 +58,54 @@ export default function Home() {
     localStorage.setItem("theme", !dark ? "dark" : "light")
   }
 
+  /* ---------------- AGENT SIM ---------------- */
+
+  const clearTimers = () => {
+    timers.current.forEach(clearTimeout)
+    timers.current = []
+  }
+
   const startAgent = () => {
     if (!input.trim()) return
 
+    clearTimers()
+
     setStage("processing")
     setCurrentStep(0)
+    setTrainReveal(0)
+    setHotelReveal(0)
 
     STEPS.forEach((_, i) => {
-      setTimeout(() => {
-        setCurrentStep(i + 1)
+      timers.current.push(
+        setTimeout(() => {
+          setCurrentStep(i + 1)
 
-        if (i === STEPS.length - 1) {
-          setTimeout(() => setStage("done"), 1200)
-        }
-      }, (i + 1) * 2200)
+          if (i === STEPS.length - 1) {
+            setTimeout(() => setStage("done"), 1500)
+          }
+        }, (i + 1) * 2200)
+      )
+    })
+
+    TRAINS.forEach((_, i) => {
+      timers.current.push(
+        setTimeout(() => setTrainReveal(i + 1), 900 + i * 1500)
+      )
+    })
+
+    HOTELS.forEach((_, i) => {
+      timers.current.push(
+        setTimeout(() => setHotelReveal(i + 1), 6000 + i * 1500)
+      )
     })
   }
 
+  /* ---------------- UI ---------------- */
+
   return (
     <div className="app">
+
+      {/* SIDEBAR */}
       <aside className="sidebar">
         <button className="icon-btn">✈️</button>
         <button className="icon-btn">
@@ -71,7 +113,20 @@ export default function Home() {
         </button>
       </aside>
 
+      {/* MAIN */}
       <main className="main">
+
+        {/* BRAND */}
+        <div className="brand-header">
+          <h1 className="brand-title metal-gradient-text">
+            Autovoyage AI
+          </h1>
+          <p className="brand-sub">
+            Intelligent Travel Planning Agent
+          </p>
+        </div>
+
+        {/* TOP RIGHT */}
         <div className="top-right">
           <button onClick={toggleTheme} className="icon-btn">
             {dark ? <Sun size={18} /> : <Moon size={18} />}
@@ -79,19 +134,22 @@ export default function Home() {
           <div className="avatar">S</div>
         </div>
 
+        {/* CENTER */}
         <div className="center">
 
+          {/* IDLE */}
           {stage === "idle" && (
             <>
-              <h1>What’s on your mind today?</h1>
+              <h2>What’s on your mind today?</h2>
 
               <div className="prompt">
                 <Plus size={18} className="muted" />
+
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Plan a 5 day trip to Jaipur under 10k"
                 />
+
                 <button className="send" onClick={startAgent}>
                   <Send size={16} />
                 </button>
@@ -99,39 +157,43 @@ export default function Home() {
             </>
           )}
 
+          {/* PROCESSING */}
           {stage === "processing" && (
             <>
-              <h1>Autovoyage is preparing your itinerary...</h1>
+              <h2>Preparing your itinerary...</h2>
 
               <div className="steps">
+
                 {currentStep >= 1 && (
                   <div className="step active">
-                    {currentStep >= 1 ? "✓" : "⏳"} Evaluating travel options
-
-                    <ul className="option-list">
-                      {TRAINS.map((train) => (
-                        <li key={train}>{train}</li>
+                    ✓ Evaluating travel options
+                    <ul>
+                      {TRAINS.slice(0, trainReveal).map((t) => (
+                        <li key={t}>{t}</li>
                       ))}
                     </ul>
 
                     {currentStep >= 2 && (
-                      <p className="selected">Selected: Jaipur Intercity</p>
+                      <p className="selected">
+                        Selected: {selectedTrain}
+                      </p>
                     )}
                   </div>
                 )}
 
                 {currentStep >= 3 && (
                   <div className="step active">
-                    {currentStep >= 3 ? "✓" : "⏳"} Comparing hotels
-
-                    <ul className="option-list">
-                      {HOTELS.map((hotel) => (
-                        <li key={hotel}>{hotel}</li>
+                    ✓ Comparing hotels
+                    <ul>
+                      {HOTELS.slice(0, hotelReveal).map((h) => (
+                        <li key={h}>{h}</li>
                       ))}
                     </ul>
 
                     {currentStep >= 4 && (
-                      <p className="selected">Selected: Hotel Arya Niwas</p>
+                      <p className="selected">
+                        Selected: {selectedHotel}
+                      </p>
                     )}
                   </div>
                 )}
@@ -139,77 +201,202 @@ export default function Home() {
                 {currentStep >= 5 && (
                   <div className="step active">
                     ✓ Planning food experiences
-                    <ul className="option-list">
-                      <li> Rawat Mishtan Bhandar</li>
-                      <li> LMB Restaurant</li>
-                      <li> Street Food near Hawa Mahal</li>
-                    </ul>
                   </div>
                 )}
 
                 {currentStep >= 6 && (
                   <div className="step active">
                     ✓ Designing sightseeing plan
-                    <ul className="option-list">
-                      <li> Amer Fort</li>
-                      <li> Hawa Mahal</li>
-                      <li> City Palace</li>
-                      <li> Nahargarh Fort</li>
-                    </ul>
                   </div>
                 )}
 
+                {currentStep >= 7 && (
+                  <div className="step active">
+                    ✓ Checking weather conditions
+                  </div>
+                )}
+
+                {currentStep >= 8 && (
+                  <div className="step active">
+                    ✓ Analyzing crowd patterns
+                  </div>
+                )}
+
+                {currentStep >= 9 && (
+                  <div className="step active">
+                    ✓ Preparing packing suggestions
+                  </div>
+                )}
               </div>
             </>
           )}
+
+          {/* DONE */}
           {stage === "done" && (
             <>
-              <h1>Your Trip Itinerary</h1>
+              <h2>Your Jaipur Journey</h2>
 
-              <div className="output">
-
-                <p><strong>Destination:</strong> Jaipur (5 Days)</p>
-
+              {/* SUMMARY */}
+              <div className="trip-summary">
                 <p>
-                  <strong>Mode of Transport:</strong> Jaipur Intercity Train  
-                  <a href="https://www.irctc.co.in" target="_blank" className="booking-link">
-                    Book Ticket <ExternalLink size={14} />
+                  <strong>Transport:</strong> {selectedTrain}
+                  <a
+                    href="https://www.irctc.co.in"
+                    target="_blank"
+                    className="booking-link"
+                  >
+                    Book <ExternalLink size={14} />
                   </a>
                 </p>
 
                 <p>
-                  <strong>Hotel:</strong> Hotel Arya Niwas  
-                  <a href="https://www.booking.com" target="_blank" className="booking-link">
-                    View & Book <ExternalLink size={14} />
+                  <strong>Hotel:</strong> {selectedHotel}
+                  <a
+                    href="https://www.booking.com"
+                    target="_blank"
+                    className="booking-link"
+                  >
+                    View <ExternalLink size={14} />
                   </a>
                 </p>
 
-                <p><strong>Food Options:</strong></p>
-                <ul>
-                  <li>Rawat Mishtan Bhandar</li>
-                  <li>LMB Restaurant</li>
-                  <li>Street Food near Hawa Mahal</li>
-                </ul>
+                <p>
+                  <strong>Weather:</strong> Sunny, 29-33°C
+                </p>
 
-                <p><strong>Sightseeing:</strong></p>
-                <ul>
-                  <li>Amer Fort</li>
-                  <li>Hawa Mahal</li>
-                  <li>City Palace</li>
-                  <li>Nahargarh Fort</li>
-                </ul>
-
-                <p><strong>Estimated Budget:</strong> ₹9300</p>
+                <p>
+                  <strong>Estimated Budget:</strong> ₹9300
+                </p>
               </div>
 
+              {/* ALTERNATIVES */}
+              <div className="alternatives">
+                <h4>Other Stay Options</h4>
+
+                {HOTELS.filter((h) => h !== selectedHotel).map((h) => (
+                  <button
+                    key={h}
+                    className="alt-option"
+                    onClick={() => setSelectedHotel(h)}
+                  >
+                    {h}
+                  </button>
+                ))}
+              </div>
+
+              {/* TIMELINE */}
+              <div className="timeline">
+
+                <TimelineDay
+                  color="day-blue"
+                  title="Day 1 – Travel & Arrival"
+                  lines={[
+                    `🚆 ${selectedTrain}`,
+                    `🏨 Stay at ${selectedHotel}`,
+                    "🍛 Dinner at Rawat Mishtan",
+                  ]}
+                />
+
+                <TimelineDay
+                  color="day-green"
+                  title="Day 2 – Heritage Exploration"
+                  lines={[
+                    "🏰 Amer Fort",
+                    "🌇 Nahargarh Sunset",
+                  ]}
+                />
+
+                <TimelineDay
+                  color="day-purple"
+                  title="Day 3 – Culture & Architecture"
+                  lines={[
+                    "🕌 City Palace",
+                    "📸 Hawa Mahal",
+                  ]}
+                />
+
+                <TimelineDay
+                  color="day-orange"
+                  title="Day 4 – Markets & Food"
+                  lines={[
+                    "🛍 Johari Bazaar",
+                    "🍢 Street Food Exploration",
+                  ]}
+                />
+
+                <TimelineDay
+                  color="day-pink"
+                  title="Day 5 – Departure"
+                  lines={[
+                    "☕ Breakfast & Checkout",
+                    "🚆 Return Journey",
+                  ]}
+                />
+
+              </div>
+
+              {/* ACTIONS */}
               <button className="download">
                 <Download size={16} /> Download as PDF
               </button>
+
+              <div className="action-buttons">
+                <button
+                  className="secondary-btn"
+                  onClick={() => setShowEditPrompt(true)}
+                >
+                  Modify Plan
+                </button>
+              </div>
+
+              {showEditPrompt && (
+                <div className="prompt edit-prompt">
+                  <input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                  />
+
+                  <button
+                    className="send"
+                    onClick={() => {
+                      setShowEditPrompt(false)
+                      startAgent()
+                    }}
+                  >
+                    Regenerate
+                  </button>
+                </div>
+              )}
             </>
           )}
-
         </div>
       </main>
+    </div>
+  )
+}
+
+/* -------- Timeline Component -------- */
+
+function TimelineDay({
+  color,
+  title,
+  lines,
+}: {
+  color: string
+  title: string
+  lines: string[]
+}) {
+  return (
+    <div className="timeline-item">
+      <div className="dot" />
+
+      <div className={`day-card ${color}`}>
+        <h3>{title}</h3>
+
+        {lines.map((l, i) => (
+          <p key={i}>{l}</p>
+        ))}
+      </div>
     </div>
   )
 }
