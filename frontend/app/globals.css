@@ -1,0 +1,379 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* THEME */
+html {
+  background: #fafafa;
+  color: #111;
+}
+
+html.dark {
+  background: #0f0f0f;
+  color: #f5f5f5;
+}
+
+/* LAYOUT */
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 56px;
+  background: #f0f0f0;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  gap: 12px;
+}
+
+html.dark .sidebar {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TOP RIGHT */
+.top-right {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* CENTER CONTENT */
+.center {
+  width: 100%;
+  max-width: 720px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.center h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+/* PROMPT BAR */
+.prompt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
+html.dark .prompt {
+  background: #1a1a1a;
+  border-color: #333;
+}
+
+.prompt input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: inherit;
+}
+
+/* BUTTONS */
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.icon-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+html.dark .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.send {
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+}
+
+html.dark .send {
+  background: #fff;
+  color: #000;
+}
+
+/* AVATAR */
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+html.dark .avatar {
+  background: #555;
+}
+
+/* TEXT */
+.subtitle {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #666;
+}
+
+html.dark .subtitle {
+  color: #aaa;
+}
+
+.muted {
+  opacity: 0.5;
+}
+
+/* AGENT STEPS */
+.steps {
+  width: 100%;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.step {
+  padding: 10px 12px;
+  border-left: 3px solid #ddd;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #777;
+}
+
+.step.active {
+  border-color: #000;
+  color: inherit;
+}
+
+html.dark .step {
+  border-color: #333;
+}
+
+html.dark .step.active {
+  border-color: #fff;
+}
+
+/* OUTPUT */
+.output {
+  text-align: left;
+  margin-top: 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+html.dark .output {
+  background: #1a1a1a;
+  border-color: #333;
+}
+
+.output ul {
+  margin-top: 8px;
+  padding-left: 16px;
+}
+
+.output li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+/* DOWNLOAD */
+.download {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+html.dark .download {
+  background: #fff;
+  color: #000;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ccc;
+  border-top: 2px solid black;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+
+html.dark .spinner {
+  border-top: 2px solid white;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.selected {
+  margin-top: 8px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+html.dark .selected {
+  color: #81c784;
+}
+
+.section-title {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Grid Layout */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+/* Card */
+.option-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  background: white;
+  transition: 0.2s ease;
+  position: relative;
+}
+
+html.dark .option-card {
+  background: #1a1a1a;
+  border-color: #333;
+}
+
+.option-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Selected Card */
+.selected-card {
+  border: 2px solid #2e7d32;
+}
+
+.chosen {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+/* Text */
+.option-card h4 {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.option-card p {
+  font-size: 12px;
+  color: #666;
+}
+
+.price {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.rating {
+  display: block;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.accent-travel {
+  border-left: 4px solid #2196f3;
+  background: rgba(33,150,243,0.05);
+}
+
+.accent-hotel {
+  border-left: 4px solid #4caf50;
+  background: rgba(76,175,80,0.05);
+}
+
+.accent-food {
+  border-left: 4px solid #ff9800;
+  background: rgba(255,152,0,0.05);
+}
+
+.accent-places {
+  border-left: 4px solid #9c27b0;
+  background: rgba(156,39,176,0.05);
+}
+
+.booking-link {
+  margin-left: 8px;
+  font-size: 13px;
+  text-decoration: underline;
+  color: #1976d2;
+}
+
+html.dark .booking-link {
+  color: #64b5f6;
+}
+
+.reason {
+  font-size: 13px;
+  color: #666;
+  margin-top: 4px;
+}

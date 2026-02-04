@@ -1,0 +1,5 @@
+src/__pycache__
+src/.env
+src/voyage
+frontend/.next
+frontend/node_modules
