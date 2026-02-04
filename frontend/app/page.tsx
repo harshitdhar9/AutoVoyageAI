@@ -4,6 +4,19 @@ import { useEffect, useState } from "react"
 import { Sun, Moon, Send, Plus, Download, ExternalLink } from "lucide-react"
 import "./globals.css"
 
+const TRAINS = [
+  "Mandore Express",
+  "Jaipur Intercity",
+  "Ajmer Shatabdi",
+]
+
+const HOTELS = [
+  "Hotel Arya Niwas",
+  "Hotel Pearl Palace",
+  "Hotel Umaid Bhawan",
+  "Hotel Kalyan",
+]
+
 const STEPS = [
   "Evaluating travel options",
   "Selecting transport",
@@ -19,7 +32,6 @@ export default function Home() {
   const [stage, setStage] = useState<"idle" | "processing" | "done">("idle")
   const [currentStep, setCurrentStep] = useState(0)
 
-  /* Theme */
   useEffect(() => {
     if (localStorage.getItem("theme") === "dark") {
       document.documentElement.classList.add("dark")
@@ -33,7 +45,6 @@ export default function Home() {
     localStorage.setItem("theme", !dark ? "dark" : "light")
   }
 
-  /* Agent Simulation */
   const startAgent = () => {
     if (!input.trim()) return
 
@@ -70,7 +81,6 @@ export default function Home() {
 
         <div className="center">
 
-          {/* IDLE */}
           {stage === "idle" && (
             <>
               <h1>What’s on your mind today?</h1>
@@ -89,44 +99,69 @@ export default function Home() {
             </>
           )}
 
-          {/* PROCESSING */}
           {stage === "processing" && (
             <>
               <h1>Autovoyage is preparing your itinerary...</h1>
 
               <div className="steps">
-                {STEPS.map((step, index) => (
-                  <div
-                    key={step}
-                    className={`step ${index < currentStep ? "active" : ""}`}
-                  >
-                    {index < currentStep ? "✓" : "⏳"} {step}
+                {currentStep >= 1 && (
+                  <div className="step active">
+                    {currentStep >= 1 ? "✓" : "⏳"} Evaluating travel options
 
-                    {/* Reasoning Details */}
-                    {index === 0 && currentStep > 0 && (
-                      <p className="reason">
-                        Comparing train and bus routes with pricing and timing.
-                      </p>
-                    )}
+                    <ul className="option-list">
+                      {TRAINS.map((train) => (
+                        <li key={train}>{train}</li>
+                      ))}
+                    </ul>
 
-                    {index === 2 && currentStep > 2 && (
-                      <p className="reason">
-                        Filtering 3★+ hotels with strong ratings under budget.
-                      </p>
-                    )}
-
-                    {index === 4 && currentStep > 4 && (
-                      <p className="reason">
-                        Selecting popular local food spots and authentic cuisine.
-                      </p>
+                    {currentStep >= 2 && (
+                      <p className="selected">Selected: Jaipur Intercity</p>
                     )}
                   </div>
-                ))}
+                )}
+
+                {currentStep >= 3 && (
+                  <div className="step active">
+                    {currentStep >= 3 ? "✓" : "⏳"} Comparing hotels
+
+                    <ul className="option-list">
+                      {HOTELS.map((hotel) => (
+                        <li key={hotel}>{hotel}</li>
+                      ))}
+                    </ul>
+
+                    {currentStep >= 4 && (
+                      <p className="selected">Selected: Hotel Arya Niwas</p>
+                    )}
+                  </div>
+                )}
+
+                {currentStep >= 5 && (
+                  <div className="step active">
+                    ✓ Planning food experiences
+                    <ul className="option-list">
+                      <li> Rawat Mishtan Bhandar</li>
+                      <li> LMB Restaurant</li>
+                      <li> Street Food near Hawa Mahal</li>
+                    </ul>
+                  </div>
+                )}
+
+                {currentStep >= 6 && (
+                  <div className="step active">
+                    ✓ Designing sightseeing plan
+                    <ul className="option-list">
+                      <li> Amer Fort</li>
+                      <li> Hawa Mahal</li>
+                      <li> City Palace</li>
+                      <li> Nahargarh Fort</li>
+                    </ul>
+                  </div>
+                )}
+
               </div>
             </>
           )}
-
-          {/* FINAL REPORT */}
           {stage === "done" && (
             <>
               <h1>Your Trip Itinerary</h1>
@@ -137,22 +172,14 @@ export default function Home() {
 
                 <p>
                   <strong>Mode of Transport:</strong> Jaipur Intercity Train  
-                  <a
-                    href="https://www.irctc.co.in"
-                    target="_blank"
-                    className="booking-link"
-                  >
+                  <a href="https://www.irctc.co.in" target="_blank" className="booking-link">
                     Book Ticket <ExternalLink size={14} />
                   </a>
                 </p>
 
                 <p>
                   <strong>Hotel:</strong> Hotel Arya Niwas  
-                  <a
-                    href="https://www.booking.com"
-                    target="_blank"
-                    className="booking-link"
-                  >
+                  <a href="https://www.booking.com" target="_blank" className="booking-link">
                     View & Book <ExternalLink size={14} />
                   </a>
                 </p>

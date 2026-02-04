@@ -377,3 +377,15 @@ html.dark .booking-link {
   color: #666;
   margin-top: 4px;
 }
+
+.option-list {
+  margin-top: 6px;
+  padding-left: 12px;
+  font-size: 14px;
+}
+
+.selected {
+  margin-top: 6px;
+  font-weight: 600;
+  color: #2e7d32;
+}
