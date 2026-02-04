@@ -1,7 +1,6 @@
 "use client"
-
 import { useEffect, useState, useRef } from "react"
-import { Sun, Moon, Send, Plus, ExternalLink, Download } from "lucide-react"
+import { Sun, Moon, Send, Plus, ExternalLink, Download, Sparkles } from "lucide-react"
 import "./globals.css"
 
 const DEFAULT_PROMPT = "Plan a 5 day trip to Jaipur under 10k"
@@ -26,6 +25,57 @@ const STEPS = [
   "Preparing packing suggestions",
 ]
 
+const SMART_SUGGESTIONS = [
+  {
+    icon: "💡",
+    type: "Cost Saving",
+    title: "Book train tickets now",
+    description: "Prices are expected to increase by 15% next week",
+    action: "View Tickets",
+    priority: "high"
+  },
+  {
+    icon: "🌤️",
+    type: "Weather Alert",
+    title: "Pack light layers",
+    description: "Temperature varies 10°C between morning and afternoon",
+    action: "See Packing List",
+    priority: "medium"
+  },
+  {
+    icon: "⏰",
+    type: "Timing Tip",
+    title: "Visit Amer Fort early",
+    description: "Crowds 60% lower before 9 AM, temperatures cooler",
+    action: "Adjust Schedule",
+    priority: "medium"
+  },
+  {
+    icon: "🎫",
+    type: "Experience",
+    title: "Pre-book palace combo ticket",
+    description: "Save ₹350 with online City Palace + Hawa Mahal pass",
+    action: "Book Now",
+    priority: "high"
+  },
+  {
+    icon: "🍽️",
+    type: "Local Insight",
+    title: "Try Lassiwala",
+    description: "Iconic lassi spot near Hawa Mahal - ₹50, rated 4.8/5",
+    action: "Add to Plan",
+    priority: "low"
+  },
+  {
+    icon: "📱",
+    type: "Smart Tip",
+    title: "Download offline maps",
+    description: "Old city areas have spotty connectivity",
+    action: "Get Maps",
+    priority: "medium"
+  }
+]
+
 export default function Home() {
   const [dark, setDark] = useState(false)
   const [input, setInput] = useState(DEFAULT_PROMPT)
@@ -40,6 +90,8 @@ export default function Home() {
   const [selectedHotel, setSelectedHotel] = useState("Hotel Arya Niwas")
 
   const [showEditPrompt, setShowEditPrompt] = useState(false)
+  const [dismissedSuggestions, setDismissedSuggestions] = useState<number[]>([])
+  const [showAllSuggestions, setShowAllSuggestions] = useState(false)
 
   const timers = useRef<NodeJS.Timeout[]>([])
 
@@ -74,6 +126,7 @@ export default function Home() {
     setCurrentStep(0)
     setTrainReveal(0)
     setHotelReveal(0)
+    setDismissedSuggestions([])
 
     STEPS.forEach((_, i) => {
       timers.current.push(
@@ -99,6 +152,18 @@ export default function Home() {
       )
     })
   }
+
+  const dismissSuggestion = (index: number) => {
+    setDismissedSuggestions([...dismissedSuggestions, index])
+  }
+
+  const activeSuggestions = SMART_SUGGESTIONS.filter(
+    (_, index) => !dismissedSuggestions.includes(index)
+  )
+
+  const displayedSuggestions = showAllSuggestions 
+    ? activeSuggestions 
+    : activeSuggestions.slice(0, 3)
 
   /* ---------------- UI ---------------- */
 
@@ -140,7 +205,7 @@ export default function Home() {
           {/* IDLE */}
           {stage === "idle" && (
             <>
-              <h2>What’s on your mind today?</h2>
+              <h2>What's on your mind today?</h2>
 
               <div className="prompt">
                 <Plus size={18} className="muted" />
@@ -235,6 +300,57 @@ export default function Home() {
           {stage === "done" && (
             <>
               <h2>Your Jaipur Journey</h2>
+
+              {/* SMART SUGGESTIONS */}
+              <div className="smart-suggestions-container">
+                <div className="suggestions-header">
+                  <Sparkles size={18} className="sparkle-icon" />
+                  <h3>Smart Suggestions</h3>
+                  <span className="suggestions-count">
+                    {activeSuggestions.length} insights
+                  </span>
+                </div>
+
+                <div className="suggestions-grid">
+                  {displayedSuggestions.map((suggestion, index) => (
+                    <div 
+                      key={index} 
+                      className={`suggestion-card priority-${suggestion.priority}`}
+                    >
+                      <button 
+                        className="dismiss-btn"
+                        onClick={() => dismissSuggestion(SMART_SUGGESTIONS.indexOf(suggestion))}
+                        aria-label="Dismiss"
+                      >
+                        ×
+                      </button>
+                      
+                      <div className="suggestion-icon">{suggestion.icon}</div>
+                      
+                      <div className="suggestion-content">
+                        <div className="suggestion-type">{suggestion.type}</div>
+                        <h4>{suggestion.title}</h4>
+                        <p>{suggestion.description}</p>
+                      </div>
+
+                      <button className="suggestion-action">
+                        {suggestion.action} →
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {activeSuggestions.length > 3 && (
+                  <button 
+                    className="show-more-suggestions"
+                    onClick={() => setShowAllSuggestions(!showAllSuggestions)}
+                  >
+                    {showAllSuggestions 
+                      ? "Show Less" 
+                      : `Show ${activeSuggestions.length - 3} More Suggestions`}
+                  </button>
+                )}
+              </div>
 
               {/* SUMMARY */}
               <div className="trip-summary">
