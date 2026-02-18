@@ -5,13 +5,25 @@ import "./globals.css"
 
 const DEFAULT_PROMPT = "Plan a 5 day trip to Jaipur under 10k"
 
-const TRAINS = ["Mandore Express", "Jaipur Intercity", "Ajmer Shatabdi"]
-const HOTELS = [
-  "Hotel Arya Niwas",
-  "Hotel Pearl Palace",
-  "Hotel Umaid Bhawan",
-  "Hotel Kalyan",
+const TRAINS = [
+  { name: "Mandore Express", price: 450 },
+  { name: "Jaipur Intercity", price: 380 },
+  { name: "Ajmer Shatabdi", price: 520 }
 ]
+
+const HOTELS = [
+  { name: "Hotel Arya Niwas", price: 1200, perNight: true },
+  { name: "Hotel Pearl Palace", price: 1400, perNight: true },
+  { name: "Hotel Umaid Bhawan", price: 1800, perNight: true },
+  { name: "Hotel Kalyan", price: 1000, perNight: true },
+]
+
+const OTHER_EXPENSES = {
+  food: { daily: 400, total: 2000, description: "Street food & restaurants" },
+  cityTravel: { daily: 150, total: 750, description: "Auto, metro, taxi" },
+  sightseeing: { total: 800, description: "Entry tickets & guides" },
+  shopping: { total: 500, description: "Souvenirs & local items" }
+}
 
 const STEPS = [
   "Evaluating travel options",
@@ -86,8 +98,8 @@ export default function Home() {
   const [trainReveal, setTrainReveal] = useState(0)
   const [hotelReveal, setHotelReveal] = useState(0)
 
-  const [selectedTrain, setSelectedTrain] = useState("Jaipur Intercity")
-  const [selectedHotel, setSelectedHotel] = useState("Hotel Arya Niwas")
+  const [selectedTrain, setSelectedTrain] = useState(TRAINS[1])
+  const [selectedHotel, setSelectedHotel] = useState(HOTELS[0])
 
   const [showEditPrompt, setShowEditPrompt] = useState(false)
   const [dismissedSuggestions, setDismissedSuggestions] = useState<number[]>([])
@@ -165,6 +177,28 @@ export default function Home() {
     ? activeSuggestions 
     : activeSuggestions.slice(0, 3)
 
+  // Calculate total budget
+  const calculateBudget = () => {
+    const trainCost = selectedTrain.price * 2 // Round trip
+    const hotelCost = selectedHotel.price * 4 // 4 nights
+    const foodCost = OTHER_EXPENSES.food.total
+    const travelCost = OTHER_EXPENSES.cityTravel.total
+    const sightseeingCost = OTHER_EXPENSES.sightseeing.total
+    const shoppingCost = OTHER_EXPENSES.shopping.total
+    
+    return {
+      train: trainCost,
+      hotel: hotelCost,
+      food: foodCost,
+      travel: travelCost,
+      sightseeing: sightseeingCost,
+      shopping: shoppingCost,
+      total: trainCost + hotelCost + foodCost + travelCost + sightseeingCost + shoppingCost
+    }
+  }
+
+  const budget = calculateBudget()
+
   /* ---------------- UI ---------------- */
 
   return (
@@ -234,13 +268,15 @@ export default function Home() {
                     ✓ Evaluating travel options
                     <ul>
                       {TRAINS.slice(0, trainReveal).map((t) => (
-                        <li key={t}>{t}</li>
+                        <li key={t.name}>
+                          {t.name} - ₹{t.price} (one way)
+                        </li>
                       ))}
                     </ul>
 
                     {currentStep >= 2 && (
                       <p className="selected">
-                        Selected: {selectedTrain}
+                        Selected: {selectedTrain.name} - ₹{selectedTrain.price * 2} (round trip)
                       </p>
                     )}
                   </div>
@@ -251,13 +287,15 @@ export default function Home() {
                     ✓ Comparing hotels
                     <ul>
                       {HOTELS.slice(0, hotelReveal).map((h) => (
-                        <li key={h}>{h}</li>
+                        <li key={h.name}>
+                          {h.name} - ₹{h.price}/night
+                        </li>
                       ))}
                     </ul>
 
                     {currentStep >= 4 && (
                       <p className="selected">
-                        Selected: {selectedHotel}
+                        Selected: {selectedHotel.name} - ₹{selectedHotel.price}/night
                       </p>
                     )}
                   </div>
@@ -300,6 +338,18 @@ export default function Home() {
           {stage === "done" && (
             <>
               <h2>Your Jaipur Journey</h2>
+
+              {/* JAIPUR IMAGE */}
+              <div className="destination-image">
+                <img 
+                  src="/Amber-fort-jaipur-Rajasthan-India.jpg" 
+                  alt="Jaipur City" 
+                  onError={(e) => {
+                    // Fallback to placeholder if image not found
+                    e.currentTarget.style.display = 'none'
+                  }}
+                />
+              </div>
 
               {/* SMART SUGGESTIONS */}
               <div className="smart-suggestions-container">
@@ -352,10 +402,82 @@ export default function Home() {
                 )}
               </div>
 
+              {/* BUDGET BREAKDOWN */}
+              <div className="budget-breakdown">
+                <h3>💰 Budget Breakdown</h3>
+                
+                <div className="budget-items">
+                  <div className="budget-item">
+                    <div className="budget-label">
+                      <span className="budget-icon">🚆</span>
+                      <span>Transport ({selectedTrain.name})</span>
+                    </div>
+                    <span className="budget-amount">₹{budget.train}</span>
+                  </div>
+
+                  <div className="budget-item">
+                    <div className="budget-label">
+                      <span className="budget-icon">🏨</span>
+                      <span>Hotel (4 nights @ ₹{selectedHotel.price}/night)</span>
+                    </div>
+                    <span className="budget-amount">₹{budget.hotel}</span>
+                  </div>
+
+                  <div className="budget-item">
+                    <div className="budget-label">
+                      <span className="budget-icon">🍽️</span>
+                      <span>Food (₹{OTHER_EXPENSES.food.daily}/day)</span>
+                    </div>
+                    <span className="budget-amount">₹{budget.food}</span>
+                  </div>
+
+                  <div className="budget-item">
+                    <div className="budget-label">
+                      <span className="budget-icon">🚕</span>
+                      <span>City Travel (₹{OTHER_EXPENSES.cityTravel.daily}/day)</span>
+                    </div>
+                    <span className="budget-amount">₹{budget.travel}</span>
+                  </div>
+
+                  <div className="budget-item">
+                    <div className="budget-label">
+                      <span className="budget-icon">🎫</span>
+                      <span>Sightseeing & Entry Tickets</span>
+                    </div>
+                    <span className="budget-amount">₹{budget.sightseeing}</span>
+                  </div>
+
+                  <div className="budget-item">
+                    <div className="budget-label">
+                      <span className="budget-icon">🛍️</span>
+                      <span>Shopping & Souvenirs</span>
+                    </div>
+                    <span className="budget-amount">₹{budget.shopping}</span>
+                  </div>
+                </div>
+
+                <div className="budget-total">
+                  <span>Total Estimated Cost</span>
+                  <span className="total-amount">₹{budget.total}</span>
+                </div>
+
+                {budget.total <= 10000 && (
+                  <div className="budget-status success">
+                    ✓ Within your ₹10,000 budget!
+                  </div>
+                )}
+
+                {budget.total > 10000 && (
+                  <div className="budget-status warning">
+                    ⚠️ ₹{budget.total - 10000} over budget. Consider adjusting options.
+                  </div>
+                )}
+              </div>
+
               {/* SUMMARY */}
               <div className="trip-summary">
                 <p>
-                  <strong>Transport:</strong> {selectedTrain}
+                  <strong>Transport:</strong> {selectedTrain.name} (₹{selectedTrain.price} × 2)
                   <a
                     href="https://www.irctc.co.in"
                     target="_blank"
@@ -366,7 +488,7 @@ export default function Home() {
                 </p>
 
                 <p>
-                  <strong>Hotel:</strong> {selectedHotel}
+                  <strong>Hotel:</strong> {selectedHotel.name} (₹{selectedHotel.price}/night)
                   <a
                     href="https://www.booking.com"
                     target="_blank"
@@ -379,23 +501,19 @@ export default function Home() {
                 <p>
                   <strong>Weather:</strong> Sunny, 29-33°C
                 </p>
-
-                <p>
-                  <strong>Estimated Budget:</strong> ₹9300
-                </p>
               </div>
 
               {/* ALTERNATIVES */}
               <div className="alternatives">
                 <h4>Other Stay Options</h4>
 
-                {HOTELS.filter((h) => h !== selectedHotel).map((h) => (
+                {HOTELS.filter((h) => h.name !== selectedHotel.name).map((h) => (
                   <button
-                    key={h}
+                    key={h.name}
                     className="alt-option"
                     onClick={() => setSelectedHotel(h)}
                   >
-                    {h}
+                    {h.name} - ₹{h.price}/night
                   </button>
                 ))}
               </div>
@@ -407,8 +525,8 @@ export default function Home() {
                   color="day-blue"
                   title="Day 1 – Travel & Arrival"
                   lines={[
-                    `🚆 ${selectedTrain}`,
-                    `🏨 Stay at ${selectedHotel}`,
+                    `🚆 ${selectedTrain.name}`,
+                    `🏨 Stay at ${selectedHotel.name}`,
                     "🍛 Dinner at Rawat Mishtan",
                   ]}
                 />
