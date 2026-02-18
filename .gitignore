@@ -4,3 +4,4 @@ src/voyage
 frontend/.next
 frontend/node_modules
 venv
+backend/.env
