@@ -5,3 +5,5 @@ frontend/.next
 frontend/node_modules
 venv
 backend/.env
+backend/.env
+/Users/harshitdhar/AutoVoyageAI/backend/.env

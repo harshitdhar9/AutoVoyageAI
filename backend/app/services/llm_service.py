@@ -6,7 +6,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     api_key=os.getenv("GOOGLE_API_KEY"),
@@ -15,7 +14,6 @@ llm = ChatGoogleGenerativeAI(
 
 prompt = ChatPromptTemplate.from_template("""
 You are a travel assistant.
-
 Return ONLY valid JSON.
 Do NOT wrap it in markdown.
 Do NOT add explanation.
@@ -32,7 +30,6 @@ If booking:
   "action": "book_hotel",
   "index": number
 }}
-
 User input: {input}
 """)
 
